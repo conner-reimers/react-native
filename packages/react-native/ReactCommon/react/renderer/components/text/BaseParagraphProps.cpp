@@ -102,6 +102,12 @@ void BaseParagraphProps::setProp(
         paDefaults,
         value,
         paragraphAttributes,
+        minimumFontSize,
+        "minimumFontSize");
+    REBUILD_FIELD_SWITCH_CASE(
+        paDefaults,
+        value,
+        paragraphAttributes,
         includeFontPadding,
         "includeFontPadding");
     REBUILD_FIELD_SWITCH_CASE(
