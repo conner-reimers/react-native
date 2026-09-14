@@ -93,9 +93,10 @@ internal object TextLayoutManager {
   const val PA_KEY_ADJUST_FONT_SIZE_TO_FIT: Int = 3
   const val PA_KEY_INCLUDE_FONT_PADDING: Int = 4
   const val PA_KEY_HYPHENATION_FREQUENCY: Int = 5
-  const val PA_KEY_MINIMUM_FONT_SCALE: Int = 6
+  const val PA_KEY_MINIMUM_FONT_SIZE: Int = 6
   const val PA_KEY_TEXT_ALIGN_VERTICAL: Int = 8
   const val PA_KEY_TEXT_WIDTH_MODE: Int = 9
+  const val PA_KEY_MINIMUM_FONT_SCALE: Int = 10
 
   private val TAG: String = TextLayoutManager::class.java.simpleName
 
@@ -1049,6 +1050,10 @@ internal object TextLayoutManager {
     val justificationMode = getTextJustificationMode(alignmentAttr)
 
     if (adjustFontSizeToFit) {
+      val minimumFontSize =
+          if (paragraphAttributes.contains(PA_KEY_MINIMUM_FONT_SIZE))
+              paragraphAttributes.getDouble(PA_KEY_MINIMUM_FONT_SIZE).toFloat()
+          else Float.NaN
       val minimumFontScale =
           if (paragraphAttributes.contains(PA_KEY_MINIMUM_FONT_SCALE))
               paragraphAttributes.getDouble(PA_KEY_MINIMUM_FONT_SCALE).toFloat()
@@ -1060,6 +1065,7 @@ internal object TextLayoutManager {
           YogaMeasureMode.EXACTLY,
           height,
           heightYogaMeasureMode,
+          minimumFontSize,
           minimumFontScale,
           maximumNumberOfLines,
           includeFontPadding,
@@ -1218,6 +1224,7 @@ internal object TextLayoutManager {
       widthYogaMeasureMode: YogaMeasureMode,
       height: Float,
       heightYogaMeasureMode: YogaMeasureMode,
+      minimumFontSizeAttr: Float,
       minimumFontScale: Float,
       maximumNumberOfLines: Int,
       includeFontPadding: Boolean,
@@ -1237,12 +1244,16 @@ internal object TextLayoutManager {
       currentFontSize = max(currentFontSize, span.size)
     }
 
-    // The smallest font size is the largest font size scaled by minimumFontScale, floored at 4dp
-    // to match the iOS implementation.
+    // An explicit minimum font size wins over minimumFontScale, which is applied to the largest
+    // font size in the spannable. The 4dp floor matches the iOS implementation.
     val absoluteMinimumFontSize = 4.dpToPx().toInt()
     val minimumFontSize =
-        if (minimumFontScale.isNaN() || minimumFontScale <= 0f) absoluteMinimumFontSize
-        else max((minimumFontScale * currentFontSize).toInt(), absoluteMinimumFontSize)
+        when {
+          !minimumFontSizeAttr.isNaN() -> minimumFontSizeAttr.toInt()
+          !minimumFontScale.isNaN() && minimumFontScale > 0f ->
+              max((minimumFontScale * currentFontSize).toInt(), absoluteMinimumFontSize)
+          else -> absoluteMinimumFontSize
+        }
     currentFontSize = max(currentFontSize, minimumFontSize)
 
     var intervalStart = minimumFontSize
