@@ -122,6 +122,12 @@ folly::dynamic HostPlatformParagraphProps::getDiffProps(
     result["minimumFontScale"] = paragraphAttributes.minimumFontScale;
   }
 
+  if (!floatEquality(
+          paragraphAttributes.minimumFontSize,
+          oldProps->paragraphAttributes.minimumFontSize)) {
+    result["minimumFontSize"] = paragraphAttributes.minimumFontSize;
+  }
+
   if (paragraphAttributes.includeFontPadding !=
       oldProps->paragraphAttributes.includeFontPadding) {
     result["includeFontPadding"] = paragraphAttributes.includeFontPadding;
