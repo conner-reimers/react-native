@@ -454,8 +454,8 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
   [textStorage addLayoutManager:layoutManager];
 
   if (paragraphAttributes.adjustsFontSizeToFit) {
-    CGFloat minimumFontSize = !isnan(paragraphAttributes.minimumFontSize) ? paragraphAttributes.minimumFontSize : 4.0;
     CGFloat maximumFontSize = [self _maximumFontSizeInAttributedString:attributedString];
+    CGFloat minimumFontSize = MAX(paragraphAttributes.minimumFontScale * maximumFontSize, 4.0);
     [textStorage scaleFontSizeToFitSize:size minimumFontSize:minimumFontSize maximumFontSize:maximumFontSize];
   }
 
