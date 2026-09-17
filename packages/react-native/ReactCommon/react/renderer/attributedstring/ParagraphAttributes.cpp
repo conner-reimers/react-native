@@ -33,7 +33,6 @@ bool ParagraphAttributes::operator==(const ParagraphAttributes& rhs) const {
              rhs.includeFontPadding,
              rhs.android_hyphenationFrequency,
              rhs.textAlignVertical) &&
-      floatEquality(minimumFontSize, rhs.minimumFontSize) &&
       floatEquality(minimumFontScale, rhs.minimumFontScale);
 }
 
@@ -60,9 +59,9 @@ SharedDebugStringConvertibleList ParagraphAttributes::getDebugProps() const {
           adjustsFontSizeToFit,
           paragraphAttributes.adjustsFontSizeToFit),
       debugStringConvertibleItem(
-          "minimumFontSize",
-          minimumFontSize,
-          paragraphAttributes.minimumFontSize),
+          "minimumFontScale",
+          minimumFontScale,
+          paragraphAttributes.minimumFontScale),
       debugStringConvertibleItem(
           "includeFontPadding",
           includeFontPadding,

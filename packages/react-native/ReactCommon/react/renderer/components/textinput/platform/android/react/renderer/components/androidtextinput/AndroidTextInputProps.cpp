@@ -390,9 +390,9 @@ folly::dynamic AndroidTextInputProps::getDiffProps(
   }
 
   if (!floatEquality(
-          paragraphAttributes.minimumFontSize,
-          oldProps->paragraphAttributes.minimumFontSize)) {
-    result["minimumFontSize"] = paragraphAttributes.minimumFontSize;
+          paragraphAttributes.minimumFontScale,
+          oldProps->paragraphAttributes.minimumFontScale)) {
+    result["minimumFontScale"] = paragraphAttributes.minimumFontScale;
   }
 
   if (paragraphAttributes.includeFontPadding !=
